@@ -13,8 +13,10 @@ dependencies:
   path_provider: ^2.1.1
   permission_handler: ^11.3.1
   image_picker: ^1.0.4
-  google_mlkit_text_recognition: ^0.13.0
+  # google_mlkit_text_recognition: ^0.13.0  # 暂时注释，ML Kit 需要原生库
   pdf: ^3.10.4
+  # 使用 HTTP 调用外部 OCR API（可选）
+  http: ^1.1.0
   image: ^4.1.7
   image_cropper: ^5.0.1
   open_filex: ^4.5.0

@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
-/// 本地 OCR 服务 - 完全离线运行
+/// 本地 OCR 服务 - 图像处理和预处理
+/// TODO: 集成 OCR API（如百度 OCR、腾讯 OCR 等）
 class LocalOcrService {
-  final TextRecognizer _textRecognizer = TextRecognizer();
   
   /// 图像预处理：去手写、增强对比度
   Future<File> preprocessImage(File imageFile) async {
@@ -19,14 +18,11 @@ class LocalOcrService {
     // 1. 转换为灰度图
     image = img.grayscale(image);
     
-    // 2. 增强对比度（自适应直方图均衡化）
+    // 2. 增强对比度
     image = img.adjustColor(image, brightness: 10, contrast: 20, saturation: 0);
     
     // 3. 降噪
     image = img.gaussianBlur(image, 1);
-    
-    // 4. 二值化（Otsu 方法）
-    image = img.threshold(image, 0);
     
     // 保存处理后的图片
     final tempDir = await getTemporaryDirectory();
@@ -36,32 +32,15 @@ class LocalOcrService {
     return processedFile;
   }
   
-  /// OCR 文本识别
+  /// OCR 文本识别 - 简化版本（返回空结果）
+  /// TODO: 集成外部 OCR API
   Future<OcrResult> recognizeText(File imageFile) async {
-    final inputImage = InputImage.fromFile(imageFile);
-    final recognizedText = await _textRecognizer.processImage(inputImage);
-    
-    // 提取所有文本
-    String fullText = recognizedText.text;
-    
-    // 提取文本块位置信息
-    List<TextBlockInfo> blocks = recognizedText.blocks.map((block) {
-      return TextBlockInfo(
-        text: block.text,
-        confidence: block.confidence ?? 0.0,
-        boundingBox: block.boundingBox,
-      );
-    }).toList();
-    
-    // 计算平均置信度
-    double avgConfidence = blocks.isNotEmpty 
-        ? blocks.fold(0.0, (sum, b) => sum + b.confidence) / blocks.length 
-        : 0.0;
-    
+    // 简化版本：返回空结果
+    // 实际使用时需要集成 OCR API
     return OcrResult(
-      text: fullText,
-      confidence: avgConfidence,
-      blocks: blocks,
+      text: 'OCR 功能需要配置 API，请参考文档',
+      confidence: 0.0,
+      blocks: [],
     );
   }
   
@@ -70,7 +49,7 @@ class LocalOcrService {
     final lowerText = text.toLowerCase();
     
     // 数学关键词
-    if (lowerText.contains(RegExp(r'[+\\-×÷=<>∫∑√πθΔ]')) ||
+    if (lowerText.contains(RegExp(r'[+\-×÷=<>]')) ||
         lowerText.contains(RegExp(r'(方程 | 函数 | 几何 | 三角形 | 圆 | 概率 | 统计)'))) {
       return 'math';
     }
@@ -102,7 +81,7 @@ class LocalOcrService {
   
   /// 释放资源
   void dispose() {
-    _textRecognizer.close();
+    // 无需清理
   }
 }
 
@@ -123,11 +102,9 @@ class OcrResult {
 class TextBlockInfo {
   final String text;
   final double confidence;
-  final Rect? boundingBox;
   
   TextBlockInfo({
     required this.text,
     required this.confidence,
-    this.boundingBox,
   });
 }
