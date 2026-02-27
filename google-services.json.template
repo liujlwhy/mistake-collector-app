@@ -1,0 +1,31 @@
+{
+  "_comment": "这是 Firebase 配置文件模板",
+  "_instructions": "请按照以下步骤获取真实的配置文件：",
+  "_steps": [
+    "1. 访问 https://console.firebase.google.com/",
+    "2. 创建新项目（或选择现有项目）",
+    "3. 添加 Android 应用，包名：com.mistakecollector.mistake_collector_app",
+    "4. 下载 google-services.json 文件",
+    "5. 将下载的文件保存为：android/app/google-services.json"
+  ],
+  "project_info": {
+    "project_number": "你的项目号",
+    "project_id": "你的项目 ID",
+    "storage_bucket": "你的存储桶"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "你的应用 ID",
+        "android_client_info": {
+          "package_name": "com.mistakecollector.mistake_collector_app"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "你的 API 密钥"
+        }
+      ]
+    }
+  ]
+}
