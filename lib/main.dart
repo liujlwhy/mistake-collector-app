@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mistake_collector_app/core/app_router.dart';
-import 'package:mistake_collector_app/core/constants/app_theme.dart';
-import 'package:mistake_collector_app/core/services/notification_service.dart';
 import 'package:provider/provider.dart';
+import 'package:mistake_collector_app/core/services/mistake_statistics.dart';
+import 'features/home/home_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // 初始化通知服务
-  await NotificationService().init();
-  
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => AppRouter(),
-      child: const MistakeCollectorApp(),
-    ),
-  );
+void main() {
+  runApp(const MistakeCollectorApp());
 }
 
 class MistakeCollectorApp extends StatelessWidget {
@@ -23,11 +12,16 @@ class MistakeCollectorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: '错题集',
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      routerConfig: context.watch<AppRouter>().config,
+    return ChangeNotifierProvider(
+      create: (_) => MistakeStatistics(),
+      child: MaterialApp(
+        title: '错题集',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          useMaterial3: true,
+        ),
+        home: const HomeScreen(),
+      ),
     );
   }
 }

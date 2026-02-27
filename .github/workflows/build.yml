@@ -3,8 +3,6 @@ name: Build APK
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -29,30 +27,13 @@ jobs:
       
       - name: Install dependencies
         run: flutter pub get
-        working-directory: .
-      
-      # Skip analyze and tests for now - focus on building APK
-      # - name: Analyze project
-      #   run: flutter analyze
-      #   continue-on-error: true
-      
-      # - name: Run tests
-      #   run: flutter test
       
       - name: Build APK
         run: flutter build apk --release
       
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
-      
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: build/app/outputs/flutter-apk/app-release.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
